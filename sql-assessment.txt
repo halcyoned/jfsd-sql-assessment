@@ -1,0 +1,138 @@
+SELECT * FROM users
+LIMIT 10;
+
+SELECT * FROM progress
+WHERE learn_cpp = ''
+LIMIT 100;
+
+
+-- What are the Top 25 schools?
+SELECT email_domain,
+  COUNT(*)
+FROM users
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 25;
+
+
+-- How many .edu learners are located in New York?
+SELECT COUNT(*),
+  city
+FROM users
+WHERE city = 'New York'
+  AND email_domain LIKE '%.edu';
+
+
+-- How many of these Codecademy learners are using the mobile app?
+SELECT mobile_app, COUNT(*)
+FROM users
+WHERE mobile_app != ''
+GROUP BY 1;
+
+
+-- Query for the sign up counts for each hour
+SELECT strftime('%H', sign_up_at),
+  COUNT(*)
+FROM users
+GROUP BY 1
+ORDER BY 1;
+
+-- Do different schools (.edu domains) prefer different courses?
+SELECT users.email_domain,
+  COUNT(
+    CASE
+      WHEN learn_cpp != '' THEN progress.user_id
+    END
+  ) AS 'cpp',
+  COUNT(
+    CASE
+      WHEN learn_sql != '' THEN progress.user_id
+    END
+  ) AS 'sql',
+  COUNT(
+    CASE
+      WHEN learn_html != '' THEN progress.user_id
+    END
+  ) AS 'html',
+  COUNT(
+    CASE
+      WHEN learn_javascript != '' THEN progress.user_id
+    END
+  ) AS 'javascript',
+  COUNT(
+    CASE
+      WHEN learn_java != '' THEN progress.user_id
+    END
+  ) AS 'java'
+FROM users
+JOIN progress
+  ON users.user_id = progress.user_id
+GROUP BY 1
+ORDER BY 1;
+
+-- What courses are the New Yorkers students taking?
+SELECT u.city,
+  COUNT(
+    CASE
+      WHEN learn_cpp = 'started' THEN p.user_id
+    END
+  ) AS 'cpp',
+  COUNT(
+    CASE
+      WHEN learn_sql = 'started' THEN p.user_id
+    END
+  ) AS 'sql',
+  COUNT(
+    CASE
+      WHEN learn_html = 'started' THEN p.user_id
+    END
+  ) AS 'html',
+  COUNT(
+    CASE
+      WHEN learn_javascript = 'started' THEN p.user_id
+    END
+  ) AS 'javascript',
+  COUNT(
+    CASE
+      WHEN learn_java = 'started' THEN p.user_id
+    END
+  ) AS 'java'
+FROM users u
+JOIN progress p
+  ON u.user_id = p.user_id
+WHERE city = 'New York'
+GROUP BY 1;
+
+
+-- What courses are the Chicago students taking?
+SELECT u.city,
+  COUNT(
+    CASE
+      WHEN learn_cpp = 'started' THEN p.user_id
+    END
+  ) AS 'cpp',
+  COUNT(
+    CASE
+      WHEN learn_sql = 'started' THEN p.user_id
+    END
+  ) AS 'sql',
+  COUNT(
+    CASE
+      WHEN learn_html = 'started' THEN p.user_id
+    END
+  ) AS 'html',
+  COUNT(
+    CASE
+      WHEN learn_javascript = 'started' THEN p.user_id
+    END
+  ) AS 'javascript',
+  COUNT(
+    CASE
+      WHEN learn_java = 'started' THEN p.user_id
+    END
+  ) AS 'java'
+FROM users u
+JOIN progress p
+  ON u.user_id = p.user_id
+WHERE city = 'Chicago'
+GROUP BY 1;
